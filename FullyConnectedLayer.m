@@ -12,6 +12,9 @@ classdef FullyConnectedLayer < handle
         is_output_layer
         % optimal_weights
         % optimal_biases
+        v_W_prev
+        v_b_prev
+        gamma
     end
     
     methods
@@ -32,6 +35,12 @@ classdef FullyConnectedLayer < handle
             obj.weights = randn(output_size, input_size);
             obj.biases = randn(output_size, 1);
 
+            % Initialize v for momentum
+            obj.v_W_prev = zeros(output_size, input_size);
+            obj.v_b_prev = zeros(output_size, 1);
+
+            obj.gamma = 0.9;
+
         end
         
         % Forward pass through the layer
@@ -44,7 +53,7 @@ classdef FullyConnectedLayer < handle
 
         
         % Backward pass through the layer
-        function gradient = backward(obj, gradient, learning_rate, N, is_output_layer)
+        function gradient = backward(obj, gradient, learning_rate, N, is_output_layer, use_momentum)
             
             % Calculate gradients for weights and biases  
             if is_output_layer
@@ -53,14 +62,26 @@ classdef FullyConnectedLayer < handle
                 dZ = gradient.* obj.activation_function_gradient(obj.Z);
             end
             dW = 1 / N * dZ * obj.input';
-            db = 1 / N * sum(dZ, 2);                       
-            
+            db = 1 / N * sum(dZ, 2);  
+
             % Calculate gradient to be passed to the previous layer
             gradient = obj.weights' * dZ;
 
             % Update weights and biases
-            obj.weights = obj.weights - learning_rate * dW;
-            obj.biases = obj.biases - learning_rate * db;
+            if use_momentum
+
+                v_W = obj.gamma*obj.v_W_prev + learning_rate * dW;
+                v_b = obj.gamma*obj.v_b_prev + learning_rate * db;
+                
+                obj.weights = obj.weights - v_W;
+                obj.biases = obj.biases - v_b;
+
+                obj.v_W_prev = v_W;
+                obj.v_b_prev = v_b;
+            else               
+                obj.weights = obj.weights - learning_rate * dW;
+                obj.biases = obj.biases - learning_rate * db;
+            end
         end
 
         % function save_optimal_weights(obj)

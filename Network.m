@@ -39,7 +39,13 @@ classdef Network
                 disp('Warning: Batch size not specified, setting to 10')
             end
 
-            test_err_min = inf;   % to track the minimum test error
+            if isfield(opts, 'use_momentum')
+                use_momentum = opts.use_momentum;
+            else
+                use_momentum = false;                
+            end
+
+            % test_err_min = inf;   % to track the minimum test error
                               
             for epoch = 1:epochs
 
@@ -73,7 +79,7 @@ classdef Network
                     delta = output - y_batch;
                     is_output_layer = true;
                     for layer = fliplr(obj.layers)                    
-                        delta = layer{1}.backward(delta, learning_rate,N_train,is_output_layer);
+                        delta = layer{1}.backward(delta, learning_rate,N_train,is_output_layer, use_momentum);
                         is_output_layer = false;
                     end
 

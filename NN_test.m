@@ -39,6 +39,7 @@ opts.learning_rate = 0.01;
 opts.epochs = 1000;
 opts.batch_size = 10;
 opts.plot_loss = true;
+opts.use_momentum = true;
 opts.loss_function = 'mse'; % TODO
 
 % Train the network
