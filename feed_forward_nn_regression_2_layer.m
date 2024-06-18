@@ -2,7 +2,7 @@ clc;  clear; close all;
 
 % rng("default")
 
-addpath('../functions/')
+addpath('functions/')
 
 % Define the neural network architecture
 n_inputs = 1;       % Number of input features

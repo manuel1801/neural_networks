@@ -32,14 +32,17 @@ net = net.addLayer(FullyConnectedLayer(20, 10, 'relu'));
 % Add another fully connected layer with output size 1 (single output)
 net = net.addLayer(FullyConnectedLayer(10, output_size, []));
 
-% Define hyperparameters
-learning_rate = 0.01;
-epochs = 10000;
+N_train = length(X_train);
 
-N = length(X_train);
+% Define hyperparameters and options
+opts.learning_rate = 0.01;
+opts.epochs = 1000;
+opts.batch_size = 10;
+opts.plot_loss = true;
+opts.loss_function = 'mse'; % TODO
 
 % Train the network
-net.train(X_train, Y_train, learning_rate, epochs);
+net.train(X_train, Y_train, X_test, Y_test, opts);
 
 % Make predictions using the trained network
 Y_pred = net.predict(X_test);
@@ -54,6 +57,7 @@ disp(['Test Error: ', num2str(test_error)]);
 Z_ground_truth = f(X1_mesh, X2_mesh);
 
 % Plot the ground truth using surf
+figure
 surf(X1_mesh, X2_mesh, Z_ground_truth, 'EdgeColor', 'none');
 hold on
 

@@ -10,6 +10,8 @@ classdef FullyConnectedLayer < handle
         activation_function
         activation_function_gradient
         is_output_layer
+        % optimal_weights
+        % optimal_biases
     end
     
     methods
@@ -39,6 +41,7 @@ classdef FullyConnectedLayer < handle
             obj.output = obj.activation_function(obj.Z);
             output = obj.output;
         end
+
         
         % Backward pass through the layer
         function gradient = backward(obj, gradient, learning_rate, N, is_output_layer)
@@ -59,5 +62,11 @@ classdef FullyConnectedLayer < handle
             obj.weights = obj.weights - learning_rate * dW;
             obj.biases = obj.biases - learning_rate * db;
         end
+
+        % function save_optimal_weights(obj)
+        %     obj.optimal_weights = obj.weights;
+        %     obj.optimal_biases = obj.biases;
+        % end
+        
     end
 end
